@@ -44,7 +44,7 @@
 - [Detection Tips](#detection-tips)
 - [Splunk Queries](#splunk-queries)
 - [Microsoft Sentinel (KQL)](#microsoft-sentinel-kql)
-- [Sigma Rule Example](#sigma-rule-example)
+- [Sigma Rule Example](#Sample-Sigma-Detection-Rule)
 - [MITRE ATT&CK Mapping](#mitre-attck-mapping)
 - [Common False Positives](#common-false-positives)
 - [Analyst Tips](#analyst-tips)
