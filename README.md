@@ -136,32 +136,29 @@ Without understanding Event IDs, investigating security incidents becomes signif
 
 ## Investigation Workflow
 
-```text
-Alert Generated
-      │
-      ▼
-Identify Event ID
-      │
-      ▼
-Review User Account
-      │
-      ▼
-Review Source IP
-      │
-      ▼
-Review Process Tree
-      │
-      ▼
-Review Parent Process
-      │
-      ▼
-Correlate Related Event IDs
-      │
-      ▼
-Map to MITRE ATT&CK
-      │
-      ▼
-Contain or Escalate
+```mermaid
+flowchart TD
+    A[Alert Generated]
+    B[Identify Event ID]
+    C[Review User Account]
+    D[Review Source IP]
+    E[Review Process Tree]
+    F[Review Parent Process]
+    G[Correlate Related Event IDs]
+    H[Map to MITRE ATT&CK]
+    I[Contain or Escalate]
+
+    A --> B --> C --> D --> E --> F --> G --> H --> I
+
+    classDef start fill:#16a34a,color:#fff,stroke:#166534,stroke-width:2px;
+    classDef process fill:#2563eb,color:#fff,stroke:#1d4ed8,stroke-width:2px;
+    classDef analysis fill:#f59e0b,color:#000,stroke:#d97706,stroke-width:2px;
+    classDef finish fill:#dc2626,color:#fff,stroke:#991b1b,stroke-width:2px;
+
+    class A start;
+    class B,C,D process;
+    class E,F,G,H analysis;
+    class I finish;
 ```
 
 ---
