@@ -25,6 +25,16 @@ Although this event simply records a successful logon, it is one of the **most i
 
 By itself, Event ID 4624 is usually benign. However, when correlated with other security events such as **4672 (Special Privileges Assigned)**, **4688 (Process Creation)**, or **4104 (PowerShell Script Block Logging)**, it can reveal malicious activity.
 
+```mermaid
+flowchart LR
+
+User --> Authentication
+
+Authentication -->|"Success"| Event4624[Event ID 4624]
+
+Authentication -->|"Failure"| Event4625[Event ID 4625]
+```
+
 ---
 
 # Why This Event Matters
@@ -172,6 +182,24 @@ Frequent NTLM usage in modern domains may indicate legacy systems or attacker ac
 
 # Common Attack Scenarios
 
+```mermaid
+flowchart LR
+
+A[4625 Failed Logon]
+
+B[4624 Successful Logon]
+
+C[4672 Admin Privileges]
+
+D[4688 Process Created]
+
+E[4104 PowerShell]
+
+F[🚨 Investigation]
+
+A --> B --> C --> D --> E --> F
+```
+
 ## Scenario 1 – Successful Brute Force
 
 ```
@@ -244,6 +272,20 @@ Indicators:
 ---
 
 # Investigation Checklist
+
+```mermaid
+flowchart TD
+    A[Alert Triggered]
+    B[Review Event 4624]
+    C[Identify User]
+    D[Check Source IP]
+    E[Review Logon Type]
+    F[Correlate Related Events]
+    G[Build Timeline]
+    H[Respond]
+
+    A --> B --> C --> D --> E --> F --> G --> H
+```
 
 When investigating Event ID 4624, verify:
 
