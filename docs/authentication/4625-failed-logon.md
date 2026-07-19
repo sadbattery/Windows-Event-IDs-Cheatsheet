@@ -1,70 +1,115 @@
+[⬅️ Event ID 4624 – Successful Logon](4624-successful-logon.md) | [🏠 Authentication Overview](../authentication.md) | [➡️ Next: Event ID 4634 – Logoff](4634-logoff.md)
+
+---
 
 # Event ID 4625 – Failed Logon
-
-[⬅️ Previous: Event ID 4624 – Successful Logon](4624-successful-logon.md) | [🏠 Authentication Overview](../authentication.md) | [➡️ Next: Event ID 4634 – Logoff](4634-logoff.md)
 
 ![Category](https://img.shields.io/badge/Category-Authentication-0A66C2?style=flat-square)
 ![Severity](https://img.shields.io/badge/Severity-Medium-F59E0B?style=flat-square)
 ![MITRE](https://img.shields.io/badge/MITRE-T1110-C62828?style=flat-square)
 
-> 📖 **Reading Time:** 10 minutes
+---
+
+# Quick Facts
+
+| Property | Value |
+|----------|-------|
+| **Event ID** | 4625 |
+| **Category** | Authentication |
+| **Log Source** | Windows Security Log |
+| **Severity** | Medium *(Context Dependent)* |
+| **MITRE ATT&CK** | T1110 – Brute Force |
+| **Typical Volume** | High |
+| **Detection Priority** | ⭐⭐⭐⭐⭐ |
+| **Reading Time** | ~10 minutes |
 
 ---
 
 # Table of Contents
 
-- Overview
-- Why This Event Matters
-- Event Information
-- When Is Event ID 4625 Generated?
-- Authentication Workflow
-- Important Event Fields
-- Logon Types
-- NTSTATUS & SubStatus Codes
-- Example Windows Event
-- Common Attack Scenarios
-- Investigation Playbook
+- [Overview](#overview)
+- [Why This Event Matters](#why-this-event-matters)
+- [Event Information](#event-information)
+- [When Is Event ID 4625 Generated?](#when-is-event-id-4625-generated)
+- [Authentication Workflow](#authentication-workflow)
+- [Important Event Fields](#important-event-fields)
+- [Windows Logon Types](#windows-logon-types)
+- [NTSTATUS & SubStatus Codes](#ntstatus--substatus-codes)
+- [Example Windows Event](#example-windows-event)
+- [Event XML Fields](#event-xml-fields)
+- [Understanding the Example](#understanding-the-example)
+- [Common Attack Scenarios](#common-attack-scenarios)
+- [Analyst Interpretation](#analyst-interpretation)
+- [Investigation Playbook](#investigation-playbook)
+- [Detection Tips](#detection-tips)
+- [Splunk Queries](#splunk-queries)
+- [Microsoft Sentinel (KQL)](#microsoft-sentinel-kql)
+- [Sigma Rule Example](#sigma-rule-example)
+- [MITRE ATT&CK Mapping](#mitre-attck-mapping)
+- [Common False Positives](#common-false-positives)
+- [Analyst Tips](#analyst-tips)
+- [Related Event IDs](#related-event-ids)
+- [Investigation Checklist](#investigation-checklist)
+- [Key Takeaways](#key-takeaways)
+- [References](#references)
 
 ---
 
 # Overview
 
-**Event ID 4625** is generated whenever Windows fails to authenticate a user, service account, or computer account.
+**Event ID 4625** is generated whenever Windows fails to authenticate a **user**, **computer account**, or **service account**.
 
-A failed authentication attempt does **not automatically indicate malicious activity**. Users frequently mistype passwords, use expired credentials, or attempt to access disabled accounts.
+A failed authentication attempt does **not automatically indicate malicious activity**. Users frequently mistype passwords, use expired credentials, attempt to log in with disabled accounts, or encounter authentication policy restrictions.
 
-However, repeated or unusual Event ID 4625 entries are often among the earliest indicators of attacks such as:
+However, repeated or unusual Event ID **4625** entries are among the earliest indicators of attacks such as:
 
 - Brute Force
 - Password Spraying
 - Credential Stuffing
-- User Enumeration
+- Username Enumeration
+- Pass-the-Hash
 - Lateral Movement
 - Unauthorized Remote Desktop Access
 
-For SOC Analysts, Event ID 4625 is one of the most valuable Windows Security Events because it frequently appears before a successful compromise.
+```mermaid
+flowchart LR
+    A[Authentication Request]
+    --> B{Credentials Valid?}
+
+    B -->|Yes| C[4624 Successful Logon]
+
+    B -->|No| D[4625 Failed Logon]
+```
+
+> [!IMPORTANT]
+> Event ID **4625** is one of the most valuable Windows Security Events for SOC analysts because attackers almost always generate failed authentication attempts before gaining access.
 
 ---
 
 # Why This Event Matters
 
-Successful attacks often begin with failed authentication attempts.
+Many real-world attacks begin with repeated authentication failures.
 
-A typical attack chain may look like:
+A common attack progression looks like this:
 
-```text
-4625
-4625
-4625
-4625
-4624
-4672
-4688
+```mermaid
+flowchart LR
+    A[4625]
+    --> B[4625]
+    --> C[4625]
+    --> D[4624]
+    --> E[4672]
+    --> F[4688]
 ```
 
-The attacker repeatedly guesses passwords until authentication succeeds.
+This sequence often represents:
 
-Monitoring Event ID 4625 helps defenders detect attacks **before privilege escalation or malware execution occurs.**
+- Password guessing
+- Successful compromise
+- Administrative access
+- Post-exploitation activity
+
+Monitoring Event ID **4625** allows defenders to detect attacks **before privilege escalation, persistence, or malware execution occurs.**
 
 ---
 
@@ -72,59 +117,52 @@ Monitoring Event ID 4625 helps defenders detect attacks **before privilege escal
 
 | Property | Value |
 |----------|-------|
-| Event ID | 4625 |
-| Log Name | Security |
-| Source | Microsoft Windows Security Auditing |
-| Category | Logon |
-| Trigger | Failed Authentication |
-| Severity | Medium (Context Dependent) |
-| Default Enabled | Yes |
+| **Event ID** | 4625 |
+| **Log Name** | Security |
+| **Provider** | Microsoft-Windows-Security-Auditing |
+| **Category** | Logon |
+| **Trigger** | Failed authentication |
+| **Default Enabled** | Yes |
 
 ---
 
 # When Is Event ID 4625 Generated?
 
-Windows records Event ID 4625 whenever authentication fails.
+Windows generates Event ID **4625** whenever an authentication attempt fails.
 
-Examples include:
+Common reasons include:
 
 - Incorrect password
-- Incorrect username
+- Unknown username
 - Disabled account
 - Locked account
 - Expired account
 - Expired password
-- Smart card failure
+- Smart card authentication failure
 - Kerberos authentication failure
 - NTLM authentication failure
-- Remote Desktop login failure
+- Remote Desktop authentication failure
+- Logon policy restrictions
 
 ---
 
 # Authentication Workflow
 
 ```mermaid
-flowchart TD
+flowchart LR
+    A[User Enters Credentials]
+    --> B[Winlogon]
+    --> C[LSASS]
 
-A[User Enters Credentials]
+    C --> D{Credentials Valid?}
 
-B[Winlogon]
+    D -->|Yes| E[4624]
 
-C[LSASS]
-
-D{Credentials Valid?}
-
-E[Event ID 4624]
-
-F[Event ID 4625]
-
-A --> B
-B --> C
-C --> D
-
-D -->|Yes| E
-D -->|No| F
+    D -->|No| F[4625]
 ```
+
+> [!TIP]
+> Understanding the Windows authentication workflow helps analysts determine whether failures originate from user mistakes, authentication policies, or attacker activity.
 
 ---
 
@@ -132,272 +170,348 @@ D -->|No| F
 
 | Field | Description | Investigation Value |
 |--------|-------------|--------------------|
-| TargetUserName | Username being authenticated | Primary account |
-| TargetDomainName | Domain | Determine authentication scope |
-| Status | Failure reason | Root cause |
-| SubStatus | Detailed failure reason | Additional context |
-| FailureReason | Human-readable explanation | Investigation |
-| LogonType | Authentication method | Attack identification |
-| AuthenticationPackage | Kerberos / NTLM | Protocol analysis |
-| WorkstationName | Source computer | Device identification |
-| IpAddress | Source IP | Critical evidence |
-| ProcessName | Process requesting authentication | Detect unusual activity |
+| **TargetUserName** | Account being authenticated | Primary account under investigation |
+| **TargetDomainName** | User domain | Authentication scope |
+| **Status** | Primary failure code | Root cause |
+| **SubStatus** | Detailed failure code | Additional context |
+| **FailureReason** | Human-readable explanation | Quick triage |
+| **LogonType** | Authentication method | Attack identification |
+| **AuthenticationPackageName** | Kerberos or NTLM | Protocol analysis |
+| **IpAddress** | Source IP | Critical investigation artifact |
+| **WorkstationName** | Source endpoint | Device identification |
+| **ProcessName** | Process requesting authentication | Detect abnormal authentication |
 
 ---
 
 # Windows Logon Types
 
-The **Logon Type** field provides context on how authentication was attempted.
+The **Logon Type** field explains how authentication was attempted.
 
-| Logon Type | Description | Typical Example |
-|------------|-------------|----------------|
-| 2 | Interactive | User logs in locally |
-| 3 | Network | SMB or shared folders |
-| 4 | Batch | Scheduled Task |
-| 5 | Service | Windows Service |
-| 7 | Unlock | Unlock workstation |
-| 8 | NetworkCleartext | IIS Authentication |
-| 9 | NewCredentials | RunAs |
-| 10 | Remote Interactive | Remote Desktop |
-| 11 | Cached Interactive | Cached domain login |
+| Logon Type | Name | Typical Example | Investigation Priority |
+|------------|------|-----------------|------------------------|
+| **2** | Interactive | Local console login | 🟢 Low |
+| **3** | Network | SMB, shared folders | 🟡 Medium |
+| **4** | Batch | Scheduled Tasks | 🟢 Low |
+| **5** | Service | Windows Services | 🟢 Low |
+| **7** | Unlock | Unlock workstation | 🟢 Low |
+| **8** | NetworkCleartext | IIS, Basic Authentication | 🟠 High |
+| **9** | NewCredentials | RunAs | 🟠 High |
+| **10** | RemoteInteractive | Remote Desktop (RDP) | 🔴 Very High |
+| **11** | CachedInteractive | Cached domain logon | 🟢 Low |
 
 > [!TIP]
-> Logon Types **3** and **10** deserve special attention because they are frequently observed during lateral movement and unauthorized remote access.
+> Logon Types **3** and **10** are the most commonly investigated because they frequently appear during lateral movement and unauthorized remote access.
 
 ---
 
 # NTSTATUS & SubStatus Codes
 
-Windows records hexadecimal error codes that explain *why* authentication failed.
+One of the most valuable sections of Event ID **4625** is the **Status** and **SubStatus** fields.
 
-| Status | Meaning | Analyst Action |
-|---------|----------|---------------|
-| 0xC0000064 | User does not exist | Investigate possible username enumeration |
-| 0xC000006A | Incorrect password | Count repeated attempts |
-| 0xC000006D | Bad username/password | Correlate with previous events |
-| 0xC000006F | Outside allowed login hours | Verify policy |
-| 0xC0000070 | Workstation restriction | Review source device |
-| 0xC0000071 | Password expired | Usually legitimate |
-| 0xC0000072 | Account disabled | Investigate source |
-| 0xC0000193 | Account expired | Verify account lifecycle |
-| 0xC0000234 | Account locked | Review previous failed logons |
+These hexadecimal codes explain **why authentication failed**.
+
+| Status Code | Meaning | Analyst Action |
+|-------------|----------|----------------|
+| **0xC0000064** | Username does not exist | Investigate username enumeration |
+| **0xC000006A** | Incorrect password | Count repeated attempts |
+| **0xC000006D** | Bad username or password | Correlate with previous failures |
+| **0xC000006E** | Account restriction | Review account policies |
+| **0xC000006F** | Outside allowed logon hours | Verify policy configuration |
+| **0xC0000070** | Workstation restriction | Review source device |
+| **0xC0000071** | Password expired | Usually legitimate |
+| **0xC0000072** | Account disabled | Investigate authentication source |
+| **0xC0000133** | Time difference between client and Domain Controller | Check time synchronization |
+| **0xC000015B** | Logon type not granted | Review user rights assignment |
+| **0xC000018C** | Trust relationship failure | Investigate domain trust |
+| **0xC0000192** | Netlogon service not running | Verify service health |
+| **0xC0000193** | Account expired | Verify account lifecycle |
+| **0xC0000224** | User must change password | Usually legitimate |
+| **0xC0000234** | Account locked | Review previous failed logons |
 
 > [!WARNING]
-> Multiple 4625 events with **Status 0xC000006A** from the same IP often indicate brute-force attempts.
-
----
+> Numerous Event ID **4625** entries with **Status 0xC000006A** from the same source IP are one of the strongest indicators of a brute-force attack.
 
 # Example Windows Event
 
+Below is a simplified example of a Windows Security Event **4625**.
+
 ```text
-Event ID: 4625
+Log Name:      Security
+Source:        Microsoft-Windows-Security-Auditing
+Event ID:      4625
+Task Category: Logon
+Level:         Information
 
-Account Name:
-Administrator
+Subject:
+    Security ID:        NULL SID
+    Account Name:       -
+    Account Domain:     -
+    Logon ID:           0x0
 
-Failure Reason:
-Unknown username or bad password
+Account For Which Logon Failed:
+    Security ID:        NULL SID
+    Account Name:       Administrator
+    Account Domain:     CONTOSO
 
-Status:
-0xC000006D
+Failure Information:
+    Failure Reason:     Unknown user name or bad password
+    Status:             0xC000006D
+    Sub Status:         0xC000006A
 
-Sub Status:
-0xC000006A
+Process Information:
+    Caller Process Name: -
 
-Logon Type:
-10
+Network Information:
+    Workstation Name:   WIN11-CLIENT
+    Source Network Address: 192.168.1.50
+    Source Port:        51422
 
-Authentication Package:
-Negotiate
-
-Source Network Address:
-192.168.1.50
-
-Workstation:
-DESKTOP-01
+Detailed Authentication Information:
+    Logon Process:      User32
+    Authentication Package: Negotiate
+    Logon Type:         10
 ```
+
+This example represents a failed **Remote Desktop (RDP)** authentication attempt against the **Administrator** account due to an incorrect password.
+
+---
+
+# Event XML Fields
+
+Most SIEM platforms parse the XML representation of Windows Event Logs rather than the human-readable format.
+
+The following fields are commonly extracted for detection and investigation.
+
+| XML Field | Description |
+|-----------|-------------|
+| **TargetUserName** | Account that failed authentication |
+| **TargetDomainName** | Domain associated with the account |
+| **Status** | Primary NTSTATUS failure code |
+| **SubStatus** | Detailed failure reason |
+| **FailureReason** | Human-readable explanation |
+| **LogonType** | Authentication method |
+| **AuthenticationPackageName** | Kerberos or NTLM |
+| **IpAddress** | Source IP address |
+| **IpPort** | Source network port |
+| **WorkstationName** | Originating endpoint |
+| **ProcessName** | Process requesting authentication |
+
+> [!NOTE]
+> Field names may vary slightly depending on whether logs are collected using Windows Event Forwarding (WEF), Splunk, Microsoft Sentinel, Elastic, or another SIEM.
 
 ---
 
 # Understanding the Example
 
-From the above event we know:
+From the previous event, we can determine:
 
-- Authentication failed.
-- Remote Desktop was used.
-- Administrator account was targeted.
-- Source IP was 192.168.1.50.
-- Incorrect password caused the failure.
+| Observation | Interpretation |
+|-------------|----------------|
+| Event ID **4625** | Authentication failed |
+| Logon Type **10** | Attempted Remote Desktop login |
+| Target Account | Administrator |
+| Status **0xC000006D** | Authentication failed |
+| SubStatus **0xC000006A** | Incorrect password |
+| Source IP | 192.168.1.50 |
+| Authentication Package | Negotiate (Kerberos/NTLM) |
 
-If dozens of similar events occur from the same IP, the activity may indicate a brute-force attack.
+> [!TIP]
+> One failed login is usually harmless. Hundreds of similar events from the same IP within a short period should be investigated immediately.
 
 ---
 
 # Common Attack Scenarios
 
-## Scenario 1 — Brute Force
+---
 
-An attacker repeatedly guesses passwords for a single account.
+## Scenario 1 — Brute Force Attack
+
+An attacker repeatedly guesses passwords for a single account until one succeeds.
 
 ```mermaid
 flowchart LR
-
-A[4625]
-B[4625]
-C[4625]
-D[4625]
-E[4624]
-
-A --> B --> C --> D --> E
+    A[4625]
+    --> B[4625]
+    --> C[4625]
+    --> D[4625]
+    --> E[4624 Successful Logon]
 ```
 
-Indicators:
+### Indicators
 
 - Same username
 - Same source IP
-- Hundreds of failures
-- One successful login
+- Large number of failures
+- Successful authentication afterward
+
+Investigate:
+
+- Source IP reputation
+- Previous authentication history
+- Password policy
+- Geographic location of the source
 
 ---
 
 ## Scenario 2 — Password Spraying
 
-Rather than attacking one account, attackers try one password against many users.
+Instead of guessing many passwords for one account, attackers try **one common password** against many users.
 
 ```mermaid
 flowchart TD
+    A[Single Source IP]
 
-IP[Single Source IP]
-
-A[User A]
-
-B[User B]
-
-C[User C]
-
-D[User D]
-
-IP --> A
-IP --> B
-IP --> C
-IP --> D
+    A --> B[User A - 4625]
+    A --> C[User B - 4625]
+    A --> D[User C - 4625]
+    A --> E[User D - 4625]
 ```
 
-Characteristics:
+### Characteristics
 
 - Same password
-- Multiple usernames
-- Few attempts per account
+- Many usernames
+- Very few attempts per account
+- Designed to avoid account lockout
 
 ---
 
 ## Scenario 3 — Username Enumeration
 
-The attacker first determines valid usernames.
+Attackers attempt to discover valid usernames before launching password attacks.
 
-Common pattern:
+```mermaid
+flowchart LR
+    A[Unknown Username]
+    --> B[4625]
 
-```text
-4625
-Status:
-0xC0000064
-
-↓
-
-4625
-
-↓
-
-4625
+    C[Valid Username]
+    --> D[Different Failure Code]
 ```
 
-Different error codes may reveal whether an account exists.
+Indicators include:
+
+- Numerous unknown usernames
+- Different NTSTATUS codes
+- Sequential username attempts
 
 ---
 
-## Scenario 4 — Unauthorized RDP Access
+## Scenario 4 — Unauthorized Remote Desktop
 
-Repeated failures using:
+```mermaid
+flowchart LR
+    A[4625]
+    --> B[Logon Type 10]
+    --> C{Successful Later?}
 
-Logon Type **10**
+    C -->|Yes| D[4624]
+    C -->|No| E[Repeated Failures]
+```
 
-Questions:
+Questions to ask:
 
 - Is RDP enabled?
 - Is the source IP trusted?
-- Is the account privileged?
-- Was a successful Event ID 4624 generated afterward?
+- Is MFA enabled?
+- Has this user authenticated successfully before?
+
+---
+
+# Analyst Interpretation
+
+The table below summarizes how SOC analysts commonly interpret Event ID **4625** patterns.
+
+| Pattern | Typical Interpretation |
+|----------|------------------------|
+| Single failed login | Usually user error |
+| Multiple failures within one minute | Possible mistyped password or brute force |
+| Hundreds of failures from one IP | Brute-force attack |
+| One password against many users | Password spraying |
+| Unknown usernames | Username enumeration |
+| Failed RDP logons (Type 10) | Investigate remote access |
+| Failures followed by Event ID 4624 | Possible account compromise |
+| NTLM authentication in a Kerberos environment | Investigate legacy systems or Pass-the-Hash activity |
+
+> [!IMPORTANT]
+> Analysts should focus on **authentication patterns**, not isolated events. A single Event ID **4625** rarely justifies escalation, but repeated failures, multiple targeted accounts, or suspicious authentication methods often require immediate investigation.
 
 ---
 
 # Investigation Playbook
 
-When investigating Event ID 4625:
+```mermaid
+flowchart TD
+    A[Alert Triggered]
+    --> B[Review Event 4625]
+    --> C[Identify Target User]
+    --> D[Review Status/SubStatus]
+    --> E[Check Logon Type]
+    --> F[Review Source IP]
+    --> G[Search for Event 4624]
+    --> H[Correlate Related Events]
+    --> I[Build Timeline]
+    --> J[Determine Impact]
+```
 
-1. Identify the targeted account.
-2. Determine whether the account exists.
-3. Review the Status and SubStatus codes.
-4. Check the Logon Type.
-5. Review the source IP address.
-6. Determine whether Kerberos or NTLM was used.
-7. Count failed attempts.
-8. Search for a successful Event ID 4624.
-9. Correlate with Event ID 4672.
-10. Review Event ID 4688.
-11. Review PowerShell Event ID 4104.
-12. Build a timeline before concluding malicious activity.
+When investigating Event ID **4625**, answer the following questions:
+
+- Does the targeted account exist?
+- Why did authentication fail?
+- Was Kerberos or NTLM used?
+- What Logon Type was requested?
+- Is the source IP expected?
+- How many failures occurred?
+- Did authentication eventually succeed?
+- Were administrative privileges later assigned (4672)?
+- Were suspicious processes launched (4688)?
+- Was PowerShell executed (4104)?
+
+> [!WARNING]
+> Authentication failures should always be correlated with successful logons, privilege assignments, and process creation before concluding that malicious activity occurred.
 
 ---
 
 # Detection Tips
 
-Event ID **4625** is one of the most common Windows Security Events. While a single failed authentication attempt is usually benign, repeated or unusual failures can indicate malicious activity.
+SOC analysts should prioritize the following behaviors:
 
-## What to Look For
-
-- Multiple failed logons from the same source IP.
+- Multiple failed logons from a single IP address.
 - Multiple failed logons targeting the same account.
-- Failed logons occurring outside normal business hours.
-- Numerous failed Remote Desktop (Logon Type 10) attempts.
-- Password spraying across many accounts.
-- Failed logons immediately followed by a successful **Event ID 4624**.
-- Authentication attempts against disabled, expired, or locked accounts.
-- NTLM authentication where Kerberos is expected.
+- Password spraying against many users.
+- Failed Remote Desktop (Logon Type 10) attempts.
+- Failed NTLM authentication where Kerberos is expected.
+- Authentication attempts against disabled or expired accounts.
+- Repeated failures followed by Event ID **4624**.
+- Authentication failures originating from unusual geographic locations.
 
 > [!TIP]
-> Event ID **4625** becomes significantly more valuable when correlated with **4624**, **4672**, and **4688**.
-
----
-
-# Detection Logic
-
-A common attack progression is:
-
-```mermaid
-flowchart LR
-
-A[Repeated 4625 Events]
-B[4624 Successful Logon]
-C[4672 Privileged Logon]
-D[4688 Process Creation]
-E[4104 PowerShell]
-F[Potential Compromise]
-
-A --> B --> C --> D --> E --> F
-```
-
-Investigating this sequence can help identify compromised accounts before attackers establish persistence.
-
----
+> Event ID **4625** becomes significantly more valuable when correlated with **4624**, **4672**, **4688**, **4768**, **4769**, and **4776**.
 
 # Splunk Queries
+
+The following Splunk queries can help identify authentication attacks involving Event ID **4625**.
+
+---
 
 ## Find All Failed Logons
 
 ```spl
 index=wineventlog EventCode=4625
-| table _time, Account_Name, host, src_ip, Logon_Type
+| table _time, Account_Name, src_ip, host, Logon_Type
 ```
+
+### What this query does
+
+Displays all failed authentication attempts along with:
+
+- Time
+- Target account
+- Source IP
+- Host
+- Logon Type
+
+Useful for initial triage.
 
 ---
 
@@ -409,6 +523,16 @@ index=wineventlog EventCode=4625
 | sort -count
 ```
 
+### What this query does
+
+Identifies IP addresses generating the highest number of failed authentication attempts.
+
+Useful for detecting:
+
+- Brute-force attacks
+- Password spraying
+- Misconfigured systems
+
 ---
 
 ## Top Targeted User Accounts
@@ -419,9 +543,20 @@ index=wineventlog EventCode=4625
 | sort -count
 ```
 
+### What this query does
+
+Shows which accounts are being targeted most frequently.
+
+Investigate accounts such as:
+
+- Administrator
+- Domain Admins
+- Service Accounts
+- Executive users
+
 ---
 
-## Possible Brute Force Attack
+## Detect Possible Brute Force
 
 ```spl
 index=wineventlog EventCode=4625
@@ -430,9 +565,15 @@ index=wineventlog EventCode=4625
 | where count > 20
 ```
 
+### What this query does
+
+Detects more than **20 failed authentication attempts within five minutes** from the same IP address.
+
+Adjust the threshold to match your environment.
+
 ---
 
-## Possible Password Spraying
+## Detect Password Spraying
 
 ```spl
 index=wineventlog EventCode=4625
@@ -440,18 +581,34 @@ index=wineventlog EventCode=4625
 | where UsersTargeted > 10
 ```
 
+### What this query does
+
+Identifies source IP addresses attempting authentication against numerous different user accounts.
+
 ---
 
 # Microsoft Sentinel (KQL)
 
-## Failed Logons
+---
+
+## Find Failed Logons
 
 ```kusto
 SecurityEvent
 | where EventID == 4625
-| project TimeGenerated, Account, Computer, IpAddress, LogonType, FailureReason
+| project
+    TimeGenerated,
+    Account,
+    Computer,
+    IpAddress,
+    LogonType,
+    FailureReason
 | order by TimeGenerated desc
 ```
+
+### What this query does
+
+Returns recent failed authentication attempts.
 
 ---
 
@@ -464,6 +621,10 @@ SecurityEvent
 | order by Attempts desc
 ```
 
+### What this query does
+
+Shows which IP addresses generate the most failed logons.
+
 ---
 
 ## Detect Brute Force
@@ -471,30 +632,41 @@ SecurityEvent
 ```kusto
 SecurityEvent
 | where EventID == 4625
-| summarize Attempts=count() by IpAddress, bin(TimeGenerated, 5m)
+| summarize Attempts=count()
+by IpAddress, bin(TimeGenerated,5m)
 | where Attempts > 20
 ```
 
+### What this query does
+
+Detects repeated failed authentication attempts from the same IP within five minutes.
+
 ---
 
-## Password Spraying Detection
+## Detect Password Spraying
 
 ```kusto
 SecurityEvent
 | where EventID == 4625
-| summarize UsersTargeted=dcount(Account) by IpAddress
+| summarize UsersTargeted=dcount(Account)
+by IpAddress
 | where UsersTargeted > 10
 ```
 
+### What this query does
+
+Identifies IP addresses attempting one or more passwords against many different accounts.
+
 ---
 
-# Sigma Rule Example
+# Sample Sigma Detection Rule
 
 ```yaml
 title: Multiple Failed Logons
-id: 9dcdb76e-4625-example
+id: d95d7b70-4625-bruteforce-example
 status: experimental
-description: Detects possible brute-force authentication attempts.
+
+description: Detects repeated failed authentication attempts.
 
 logsource:
   product: windows
@@ -507,64 +679,69 @@ detection:
   condition: selection
 
 falsepositives:
-  - User typing incorrect password
+  - User entering incorrect password
   - Service account configuration issues
 
 level: medium
 ```
 
 > [!NOTE]
-> This is a simplified Sigma example. Production environments typically add thresholds, time windows, exclusions, and correlation logic.
+> Production Sigma rules generally include thresholds, aggregation, exclusions, and time windows to reduce false positives.
 
 ---
 
 # MITRE ATT&CK Mapping
 
-| Technique | ID | Description |
-|-----------|----|-------------|
-| Brute Force | T1110 | Password guessing against one or more accounts |
-| Valid Accounts | T1078 | Successful authentication after repeated failures |
-| Remote Services | T1021 | Failed RDP or SMB authentication attempts |
-| Password Spraying | T1110.003 | Single password used against multiple users |
-| Credential Stuffing | T1110.004 | Stolen credentials tested against accounts |
+| Technique | ATT&CK ID | Description |
+|-----------|-----------|-------------|
+| Brute Force | **T1110** | Password guessing against one or more accounts |
+| Password Spraying | **T1110.003** | One password used against many accounts |
+| Credential Stuffing | **T1110.004** | Stolen credentials tested against accounts |
+| Valid Accounts | **T1078** | Successful authentication after repeated failures |
+| Remote Services | **T1021** | Failed RDP or SMB authentication attempts |
+
+> [!IMPORTANT]
+> Event ID **4625** represents **failed authentication**, not confirmed compromise. Always correlate with additional telemetry before mapping attacker behavior.
 
 ---
 
 # Common False Positives
 
-Event ID **4625** is extremely common in enterprise environments.
+Most Event ID **4625** events are legitimate.
 
-Examples of legitimate causes include:
+Examples include:
 
-- Users mistyping passwords.
+- Users entering an incorrect password.
+- Recently changed passwords.
 - Expired passwords.
+- Locked or disabled accounts.
 - Cached credentials.
-- Incorrectly configured services.
 - Scheduled tasks using outdated credentials.
+- Services configured with incorrect passwords.
 - VPN authentication failures.
-- Network interruptions.
-- Users forgetting recently changed passwords.
+- Temporary network issues.
+- Domain Controller replication delays.
 
-Always investigate the surrounding context before escalating an alert.
+> [!TIP]
+> Focus on **authentication patterns**, not isolated failures.
 
 ---
 
 # Analyst Tips
 
-> [!TIP]
-> A single Event ID **4625** rarely indicates malicious activity.
+Experienced SOC analysts rarely investigate Event ID **4625** in isolation.
 
-> [!TIP]
-> Look for authentication attempts from countries or IP addresses that users do not normally access from.
+### Best Practices
 
-> [!TIP]
-> Logon Type **10** (Remote Desktop) deserves higher priority than most failed local logons.
-
-> [!TIP]
-> Correlate failed authentication attempts with successful Event ID **4624** entries.
-
-> [!TIP]
-> Service accounts generating repeated Event ID 4625 entries often indicate configuration problems rather than attacks.
+- Review the **Status** and **SubStatus** codes first.
+- Prioritize **Logon Type 10** (Remote Desktop).
+- Investigate repeated failures from the same source IP.
+- Compare authentication times with normal user behavior.
+- Search for a subsequent **Event ID 4624**.
+- Determine whether administrative privileges were assigned (4672).
+- Review process creation (4688).
+- Check for PowerShell execution (4104).
+- Build a complete authentication timeline before escalating.
 
 ---
 
@@ -572,61 +749,96 @@ Always investigate the surrounding context before escalating an alert.
 
 | Event ID | Description | Why Correlate? |
 |-----------|-------------|----------------|
-| [4624](4624-successful-logon.md) | Successful Logon | Determine whether authentication eventually succeeded |
-| [4634](4634-logoff.md) | Logoff | Identify session duration |
-| [4648](4648-explicit-credentials.md) | Explicit Credentials | Detect alternate credential usage |
-| [4672](4672-special-privileges.md) | Special Privileges Assigned | Determine if administrative privileges were granted |
-| 4688 | Process Creation | Identify processes launched after authentication |
-| 4698 | Scheduled Task Created | Detect persistence |
-| 4697 | Service Installed | Detect persistence mechanisms |
-| 4104 | PowerShell Script Block Logging | Detect PowerShell execution |
-| 1102 | Audit Log Cleared | Possible anti-forensics |
+| **4624** | Successful Logon | Determine whether authentication eventually succeeded |
+| **4634** | Logoff | Review session duration |
+| **4648** | Explicit Credentials | Detect alternate credential usage |
+| **4672** | Special Privileges Assigned | Determine whether elevated privileges were granted |
+| **4688** | Process Creation | Review activity after authentication |
+| **4697** | Service Installation | Detect persistence |
+| **4698** | Scheduled Task Created | Detect persistence |
+| **4768** | Kerberos TGT Request | Review Kerberos authentication |
+| **4769** | Kerberos Service Ticket | Detect lateral movement |
+| **4771** | Kerberos Pre-Authentication Failure | Review Kerberos failures |
+| **4776** | NTLM Credential Validation | Review NTLM authentication |
+| **4104** | PowerShell Script Block Logging | Detect post-authentication activity |
+| **1102** | Audit Log Cleared | Detect anti-forensics |
 
 ---
 
 # Investigation Checklist
 
-Use the following checklist during investigations:
+Use the following checklist when triaging Event ID **4625**.
 
-- [ ] Identify the affected account.
+- [ ] Identify the targeted account.
+- [ ] Determine whether the account exists.
 - [ ] Review the Status and SubStatus codes.
 - [ ] Determine the Logon Type.
+- [ ] Identify the authentication package.
 - [ ] Identify the source IP address.
-- [ ] Check authentication protocol (Kerberos or NTLM).
-- [ ] Count failed attempts.
-- [ ] Search for a successful Event ID 4624.
-- [ ] Determine whether privileged access was obtained (4672).
-- [ ] Review process creation events (4688).
+- [ ] Count failed authentication attempts.
+- [ ] Search for a successful Event ID **4624**.
+- [ ] Review Event ID **4672**.
+- [ ] Review Event ID **4688**.
 - [ ] Review PowerShell activity (4104).
-- [ ] Build a complete timeline.
-- [ ] Determine whether activity is expected or malicious.
+- [ ] Build a complete authentication timeline.
 
 ---
 
 # Key Takeaways
 
-- Event ID **4625** records failed authentication attempts.
-- A single failed logon is usually not suspicious.
-- Multiple failures from the same IP can indicate brute-force attacks.
-- Password spraying targets many users with a common password.
-- Correlate Event ID 4625 with **4624**, **4672**, and **4688** for effective investigations.
-- Always consider context before escalating an alert.
+- Event ID **4625** records every failed authentication attempt.
+- A single failed logon is usually benign.
+- Multiple failures from one IP often indicate brute-force activity.
+- One password against many users suggests password spraying.
+- Status and SubStatus codes explain **why** authentication failed.
+- Always correlate Event ID **4625** with **4624**, **4672**, **4688**, **4768**, **4769**, and **4776**.
+- Context determines whether an event is malicious.
 
 ---
 
 # References
 
-- Microsoft Learn – Windows Security Auditing
-- Microsoft Security Auditing Documentation
-- Ultimate Windows Security Encyclopedia
-- MITRE ATT&CK Framework
-- Sigma Project
-- NIST SP 800-61 Rev. 2 – Computer Security Incident Handling Guide
+- Microsoft Learn – Windows Security Auditing  
+  https://learn.microsoft.com/windows/security/
+
+- Windows Security Auditing Documentation  
+  https://learn.microsoft.com/windows/security/threat-protection/auditing/
+
+- Ultimate Windows Security Encyclopedia  
+  https://www.ultimatewindowssecurity.com/securitylog/
+
+- MITRE ATT&CK – Brute Force (T1110)  
+  https://attack.mitre.org/techniques/T1110/
+
+- SigmaHQ Repository  
+  https://github.com/SigmaHQ/sigma
+
+- NIST SP 800-61 Rev. 2 – Computer Security Incident Handling Guide  
+  https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final
 
 ---
 
-## Continue Reading
+# Continue Learning
 
-- [⬅️ Event ID 4624 – Successful Logon](4624-successful-logon.md)
-- [🏠 Authentication Overview](../authentication.md)
-- [➡️ Event ID 4634 – Logoff](4634-logoff.md)
+Understanding failed logons becomes much easier when correlated with related authentication events.
+
+| Event ID | Description |
+|-----------|-------------|
+| **4624** | Successful Logon |
+| **4634** | Logoff |
+| **4648** | Logon Using Explicit Credentials |
+| **4672** | Special Privileges Assigned |
+| **4768** | Kerberos Ticket Granting Ticket (TGT) |
+| **4769** | Kerberos Service Ticket |
+| **4771** | Kerberos Pre-Authentication Failure |
+| **4776** | NTLM Credential Validation |
+
+---
+
+## Navigation
+
+⬅️ **Previous:** [Event ID 4624 – Successful Logon](4624-successful-logon.md)
+
+🏠 **Authentication Overview:** [Authentication Events](../authentication.md)
+
+➡️ **Next:** [Event ID 4634 – Logoff](4634-logoff.md)
