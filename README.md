@@ -56,16 +56,16 @@ A --> J[Detection Scenarios]
 
 | Section | Description |
 |----------|-------------|
-| Authentication | User logons, failed logons, special logons |
-| Account Management | User creation, deletion, password changes |
-| Process Creation | New process execution events |
-| Services | Service installation and modification |
-| Scheduled Tasks | Task creation and modification |
-| PowerShell | Script block logging and execution |
-| Windows Defender | Defender detections and configuration changes |
-| Sysmon | Advanced endpoint telemetry |
-| Detection Scenarios | Real-world attack examples |
-| MITRE ATT&CK Mapping | Event IDs mapped to ATT&CK techniques |
+| [Authentication](docs/authentication.md) | User logons, failed logons, special logons |
+| [Account Management](docs/account-management.md) | User creation, deletion, password changes |
+| [Process Creation](docs/process-creation.md) | New process execution events |
+| [Services](docs/services.md) | Service installation and modification |
+| [Scheduled Tasks](docs/scheduled-tasks.md) | Task creation and modification |
+| [PowerShell](docs/powershell.md) | Script block logging and execution |
+| [Windows Defender](docs/windows-defender.md) | Defender detections and configuration changes |
+| [Sysmon](docs/sysmon.md) | Advanced endpoint telemetry |
+| [Detection Scenarios](docs/detection-scenarios.md) | Real-world attack examples |
+| [MITRE ATT&CK Mapping](docs/mitre-mapping.md) | Event IDs mapped to ATT&CK techniques |
 
 ---
 ## 📚 Documentation
