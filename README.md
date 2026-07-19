@@ -191,12 +191,16 @@ If you're new to Windows Security Logs, read the repository in this order:
 10. MITRE ATT&CK Mapping
 
 ---
+## 🤝 Contributing
 
-## Contributing
+Contributions are welcome!
 
-Contributions are welcome.
+Whether you're fixing a typo, improving an explanation, adding a new Windows Event ID, or enhancing investigation guidance, your help is greatly appreciated.
 
-If you know an Event ID that should be included, feel free to open an Issue or submit a Pull Request.
+Please read the [Contributing Guide](CONTRIBUTING.md) before submitting a Pull Request.
+
+---
+
 
 ---
 
