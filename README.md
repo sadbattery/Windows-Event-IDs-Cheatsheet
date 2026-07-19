@@ -5,6 +5,12 @@
 ![GitHub stars](https://img.shields.io/github/stars/sadbattery/windows-event-ids-cheatsheet?style=flat-square)
 ![License](https://img.shields.io/github/license/sadbattery/windows-event-ids-cheatsheet?style=flat-square)
 
+![GitHub last commit](https://img.shields.io/github/last-commit/sadbattery/windows-event-ids-cheatsheet?style=for-the-badge)
+![GitHub Repo stars](https://img.shields.io/github/stars/sadbattery/windows-event-ids-cheatsheet?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/sadbattery/windows-event-ids-cheatsheet?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/sadbattery/windows-event-ids-cheatsheet?style=for-the-badge)
+![License](https://img.shields.io/github/license/sadbattery/windows-event-ids-cheatsheet?style=for-the-badge)
+
 ---
 
 ## Overview
