@@ -289,19 +289,19 @@ When investigating suspicious authentication activity:
 ---
 
 # What's Next?
+# Continue Reading
 
-The following pages provide detailed analysis of each authentication Event ID.
-
-- Event ID 4624 – Successful Logon
-- Event ID 4625 – Failed Logon
-- Event ID 4634 – Logoff
-- Event ID 4647 – User Logoff
-- Event ID 4648 – Explicit Credentials
-- Event ID 4672 – Special Privileges
-- Event ID 4768 – Kerberos TGT
-- Event ID 4769 – Service Ticket
-- Event ID 4771 – Kerberos Failure
-- Event ID 4776 – NTLM Authentication
+| Topic | Link |
+|-------|------|
+| Event ID 4624 – Successful Logon | [Read](authentication/4624-successful-logon.md) |
+| Event ID 4625 – Failed Logon | [Read](authentication/4625-failed-logon.md) |
+| Event ID 4634 – Logoff | [Read](authentication/4634-logoff.md) |
+| Event ID 4648 – Explicit Credentials | [Read](authentication/4648-explicit-credentials.md) |
+| Event ID 4672 – Special Privileges | [Read](authentication/4672-special-privileges.md) |
+| Event ID 4768 – Kerberos TGT | [Read](authentication/4768-kerberos-tgt.md) |
+| Event ID 4769 – Kerberos Service Ticket | [Read](authentication/4769-service-ticket.md) |
+| Event ID 4771 – Kerberos Failure | [Read](authentication/4771-kerberos-failure.md) |
+| Event ID 4776 – NTLM Authentication | [Read](authentication/4776-ntlm-authentication.md) |
 
 Each Event ID includes:
 
