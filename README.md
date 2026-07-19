@@ -34,6 +34,22 @@ This repository serves as a practical reference for commonly encountered Windows
 - Students learning Windows Security
 
 ---
+```mermaid
+flowchart TD
+
+A[Windows Event IDs Cheat Sheet]
+
+A --> B[Authentication]
+A --> C[Account Management]
+A --> D[Process Creation]
+A --> E[Services]
+A --> F[Scheduled Tasks]
+A --> G[PowerShell]
+A --> H[Windows Defender]
+A --> I[Sysmon]
+A --> J[Detection Scenarios]
+
+```
 
 ## Repository Contents
 
