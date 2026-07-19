@@ -45,6 +45,22 @@ This repository serves as a practical reference for commonly encountered Windows
 | MITRE ATT&CK Mapping | Event IDs mapped to ATT&CK techniques |
 
 ---
+## 📚 Documentation
+
+| Topic | Link |
+|-------|------|
+| Authentication Events | [View](docs/authentication.md) |
+| Account Management | [View](docs/account-management.md) |
+| Process Creation | [View](docs/process-creation.md) |
+| PowerShell Events | [View](docs/powershell.md) |
+| Services | [View](docs/services.md) |
+| Scheduled Tasks | [View](docs/scheduled-tasks.md) |
+| Audit Events | [View](docs/audit-events.md) |
+| Windows Defender | [View](docs/windows-defender.md) |
+| Sysmon | [View](docs/sysmon.md) |
+| Event Log Locations | [View](docs/event-log-locations.md) |
+| MITRE ATT&CK Mapping | [View](docs/mitre-mapping.md) |
+| Detection Scenarios | [View](docs/detection-scenarios.md) |
 
 ## Why Event IDs Matter
 
