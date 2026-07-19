@@ -4,6 +4,38 @@
 
 ---
 
+```mermaid
+mindmap
+  root((Windows Authentication))
+
+    Authentication Process
+
+    Protocols
+        Kerberos
+        NTLM
+
+    Logon Types
+        Interactive
+        Network
+        RDP
+        Service
+
+    Event IDs
+        4624
+        4625
+        4634
+        4648
+        4672
+        4768
+        4769
+        4771
+        4776
+
+    Detection
+
+    Investigation
+```
+
 ## Table of Contents
 
 - [Introduction](#introduction)
@@ -63,35 +95,28 @@ Authentication logs help detect:
 
 # Windows Authentication Process
 
-```
-User Enters Credentials
-        │
-        ▼
-Local Security Authority (LSASS)
-        │
-        ▼
-Authentication Package
-(Kerberos / NTLM)
-        │
-        ▼
-Credentials Valid?
-      ┌───────┐
-      │ Yes   │
-      └──┬────┘
-         ▼
- Event ID 4624
-         │
-         ▼
- Access Granted
+```mermaid
+flowchart TD
+    A[👤 User Enters Credentials]
+    B[🖥️ Winlogon]
+    C[🔐 LSASS]
+    D{Credentials Valid?}
 
-      ┌───────┐
-      │ No    │
-      └──┬────┘
-         ▼
- Event ID 4625
-         │
-         ▼
- Access Denied
+    E[✅ Event ID 4624]
+    F[❌ Event ID 4625]
+
+    G[🎫 Kerberos]
+    H[🔑 NTLM]
+
+    A --> B
+    B --> C
+    C --> D
+
+    D -->|Yes| E
+    D -->|No| F
+
+    C --> G
+    C --> H
 ```
 
 ---
