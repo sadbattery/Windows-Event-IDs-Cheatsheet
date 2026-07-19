@@ -162,18 +162,19 @@ Understanding the logon type provides context about how access was attempted.
 
 # Common Authentication Event IDs
 
-| Event ID | Description | Importance |
-|----------:|-------------|-----------|
-| 4624 | Successful Logon | ⭐⭐⭐⭐⭐ |
-| 4625 | Failed Logon | ⭐⭐⭐⭐⭐ |
-| 4634 | Logoff | ⭐⭐⭐ |
-| 4647 | User Initiated Logoff | ⭐⭐⭐ |
-| 4648 | Explicit Credentials Used | ⭐⭐⭐⭐ |
-| 4672 | Special Privileges Assigned | ⭐⭐⭐⭐⭐ |
-| 4768 | Kerberos TGT Requested | ⭐⭐⭐⭐ |
-| 4769 | Kerberos Service Ticket | ⭐⭐⭐⭐ |
-| 4771 | Kerberos Pre-Authentication Failed | ⭐⭐⭐⭐ |
-| 4776 | NTLM Authentication | ⭐⭐⭐⭐ |
+Click on an Event ID below to view detailed documentation.
+
+| Event ID | Description | Importance | Documentation |
+|----------:|-------------|:----------:|---------------|
+| **4624** | Successful Logon | ⭐⭐⭐⭐⭐ | [View](authentication/4624-successful-logon.md) |
+| **4625** | Failed Logon | ⭐⭐⭐⭐⭐ | [View](authentication/4625-failed-logon.md) |
+| **4634** | Logoff | ⭐⭐⭐ | [View](authentication/4634-logoff.md) |
+| **4648** | Logon Using Explicit Credentials | ⭐⭐⭐⭐ | [View](authentication/4648-explicit-credentials.md) |
+| **4672** | Special Privileges Assigned to New Logon | ⭐⭐⭐⭐⭐ | [View](authentication/4672-special-privileges.md) |
+| **4768** | Kerberos Authentication Ticket (TGT) Requested | ⭐⭐⭐⭐ | [View](authentication/4768-kerberos-tgt.md) |
+| **4769** | Kerberos Service Ticket Requested | ⭐⭐⭐⭐ | [View](authentication/4769-service-ticket.md) |
+| **4771** | Kerberos Pre-Authentication Failed | ⭐⭐⭐⭐ | [View](authentication/4771-kerberos-failure.md) |
+| **4776** | NTLM Authentication | ⭐⭐⭐⭐ | [View](authentication/4776-ntlm-authentication.md) |
 
 ---
 
