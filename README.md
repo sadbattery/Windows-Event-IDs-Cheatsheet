@@ -1,3 +1,4 @@
+![header](https://capsule-render.vercel.app/api?type=venom&height=300&color=gradient&customColorList=0,2,2,5,4,6,8,10,12,14,16,20,30&text=Windows%20Security&fontSize=75&animation=twinkling)
 # Windows Security Event IDs Cheat Sheet
 
 > Windows Security Event IDs explained for SOC Analysts, Blue Teamers, Threat Hunters, Incident Responders, DFIR professionals, and cybersecurity students.
