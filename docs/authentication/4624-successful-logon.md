@@ -5,6 +5,11 @@
 
 # Event ID 4624 – Successful Logon
 
+![Category](https://img.shields.io/badge/Category-Authentication-0A66C2?style=flat-square)
+![Severity](https://img.shields.io/badge/Severity-Informational-3B82F6?style=flat-square)
+![MITRE](https://img.shields.io/badge/MITRE-T1078-CB3837?style=flat-square)
+
+> 📖 **Reading Time:** 8 min
 > **Category:** Authentication  
 > **Log Source:** Windows Security Log  
 > **Severity:** Informational (Can indicate malicious activity depending on context)  
