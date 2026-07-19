@@ -1,4 +1,8 @@
 
+[⬅️ Authentication Overview](../authentication.md) | [➡️ Next: Event ID 4625](4625-failed-logon.md)
+
+---
+
 # Event ID 4624 – Successful Logon
 
 > **Category:** Authentication  
