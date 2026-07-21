@@ -391,7 +391,15 @@ The following events commonly appear before or after Event ID **4624**.
 | **1102** | Audit log cleared |
 
 ---
+# Related Articles
 
+- [LSASS](../windows-internals/lsass.md)
+- [Kerberos Authentication](../windows-internals/kerberos.md)
+- [NTLM Authentication](../windows-internals/ntlm.md)
+- [Windows Logon Types](../windows-internals/logon-types.md)
+- [Access Tokens](../windows-internals/access-tokens.md)
+
+---
 # Detection Tips
 
 SOC analysts should pay close attention to:
