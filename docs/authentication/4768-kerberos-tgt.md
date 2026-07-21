@@ -749,8 +749,13 @@ Legitimate causes include:
 
 # Related Articles
 
+## Windows Internals
+
 - [Kerberos Authentication](../windows-internals/kerberos.md)
 - [Service Accounts](../windows-internals/service-accounts.md)
+
+## Attack Techniques
+
 - [AS-REP Roasting](../attack-techniques/as-rep-roasting.md)
 ---
 
