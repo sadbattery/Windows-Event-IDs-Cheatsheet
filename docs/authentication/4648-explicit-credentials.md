@@ -645,6 +645,12 @@ Context is critical before classifying Event ID **4648** as malicious.
 | 4776 | NTLM Authentication | Legacy authentication |
 | 4104 | PowerShell Script Block Logging | PowerShell activity |
 
+# Related Articles
+
+- [Kerberos Authentication](../windows-internals/kerberos.md)
+- [NTLM Authentication](../windows-internals/ntlm.md)
+- [Pass-the-Hash](../attack-techniques/pass-the-hash.md)
+- [Pass-the-Ticket](../attack-techniques/pass-the-ticket.md)
 ---
 
 # Investigation Checklist
