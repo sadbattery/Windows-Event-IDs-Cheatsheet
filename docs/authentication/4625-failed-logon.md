@@ -763,6 +763,15 @@ Experienced SOC analysts rarely investigate Event ID **4625** in isolation.
 | **4104** | PowerShell Script Block Logging | Detect post-authentication activity |
 | **1102** | Audit Log Cleared | Detect anti-forensics |
 
+# Related Articles
+
+- [LSASS](../windows-internals/lsass.md)
+- [Kerberos Authentication](../windows-internals/kerberos.md)
+- [NTLM Authentication](../windows-internals/ntlm.md)
+- [Windows Logon Types](../windows-internals/logon-types.md)
+- [Brute Force](../attack-techniques/brute-force.md)
+- [Password Spraying](../attack-techniques/password-spraying.md)
+
 ---
 
 # Investigation Checklist
