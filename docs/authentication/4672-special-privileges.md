@@ -44,7 +44,7 @@
 - [Investigation Playbook](#investigation-playbook)
 - [Detection Tips](#detection-tips)
 - [Detection Logic](#detection-logic)
-- [SIEM Queries](#siem-queries)
+- [SIEM Queries](#splunk-queries)
 - [MITRE ATT&CK Mapping](#mitre-attck-mapping)
 - [Common False Positives](#common-false-positives)
 - [Analyst Tips](#analyst-tips)
