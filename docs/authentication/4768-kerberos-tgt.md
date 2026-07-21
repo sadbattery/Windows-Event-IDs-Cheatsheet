@@ -747,6 +747,11 @@ Legitimate causes include:
 | 4688 | Process Creation | Identify processes launched after authentication |
 | 4104 | PowerShell Script Block Logging | Detect PowerShell activity after logon |
 
+# Related Articles
+
+- [Kerberos Authentication](../windows-internals/kerberos.md)
+- [Service Accounts](../windows-internals/service-accounts.md)
+- [AS-REP Roasting](../attack-techniques/as-rep-roasting.md)
 ---
 
 # Investigation Checklist
