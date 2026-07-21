@@ -775,6 +775,11 @@ Common legitimate causes include:
 | 4104 | PowerShell Script Block Logging | Detect PowerShell activity after privileged logon |
 | 1102 | Audit Log Cleared | Detect possible anti-forensics |
 
+# Related Articles
+
+- [Windows Privileges](../windows-internals/windows-privileges.md)
+- [Access Tokens](../windows-internals/access-tokens.md)
+- [Credential Dumping](../attack-techniques/credential-dumping.md)
 ---
 
 # Investigation Checklist
