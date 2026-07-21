@@ -884,6 +884,12 @@ A logoff event alone should rarely trigger an alert.
 | 4779 | RDP Session Disconnect | Analyze remote sessions |
 | 1102 | Audit Log Cleared | Detect anti-forensics |
 
+
+# Related Articles
+
+- [Access Tokens](../windows-internals/access-tokens.md)
+- [Windows Logon Types](../windows-internals/logon-types.md)
+- [Kerberos Authentication](../windows-internals/kerberos.md)
 ---
 
 # Investigation Checklist
